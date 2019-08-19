@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vncsms/referenceKeyboard.git"
+    "url": "git+https://github.com/vncsms/react-native-reference-keyboard.git"
   },
   "author": "Vinicius",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/vncsms/referenceKeyboard/issues"
+    "url": "https://github.com/vncsms/react-native-reference-keyboard/issues"
   },
-  "homepage": "https://github.com/vncsms/referenceKeyboard#readme"
+  "homepage": "https://github.com/vncsms/react-native-reference-keyboard#readme"
 }
