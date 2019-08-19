@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
@@ -21,6 +20,7 @@ export default class modalKeyboard extends React.Component {
       text: '',
       openFriends: false,
       friends: [],
+      textInput: 0,
     }
   }
 
@@ -114,12 +114,14 @@ export default class modalKeyboard extends React.Component {
 
   _renderItem = ({item, index}) => (
     <TouchableOpacity onPress={() => this.setFriend(item)}
-                      style={[styles.userFriendContainer, index == this.props.friends.length - 1 ? {backgroundColor: 'blue'} :  {backgroundColor: 'white'}]}>
+                      style={[styles.userFriendContainer,
+                              this.props.userFriendContainer,
+                              index == this.props.friends.length - 1 ? {backgroundColor: 'blue'} :  {backgroundColor: 'white'}]}>
       <Image source={{uri: item.avatar}}
-             style={styles.userFriendImage}/>
-      <View style={styles.userFriendName}>
-        <Text>{ item.name }</Text>
-        <Text style={styles.userFriendNickname}>{ item.nickname }</Text>
+             style={[styles.userFriendImage, this.props.userFriendImage]}/>
+      <View style={[styles.userFriendName, this.props.userFriendName]}>
+        <Text style={[styles.userFriendNameText, this.props.userFriendNameText]}>{ item.name }</Text>
+        <Text style={[styles.userFriendNickname, this.props.userFriendNickname]}>{ item.nickname }</Text>
       </View>
     </TouchableOpacity>
   );
@@ -176,14 +178,14 @@ export default class modalKeyboard extends React.Component {
       <Modal
           transparent={true}
           visible={this.props.modalVisible}
-          style={styles.container}
+          style={[styles.container, this.props.container]}
           onRequestClose={() => {
             this.props.closeModal();
           }}>
           { this.state.friendsVisible ?
-            <View style={styles.flatContainer}>
+            <View style={[styles.flatContainer, this.props.flatContainer, {marginBottom: this.state.textInput}]}>
               <FlatList
-                style={styles.flat}
+                style={[styles.flat, this.props.flat]}
                 ref={(ref) => { this.flatList = ref; }}
                 data={this.state.friends.reverse()}
                 extraData={this.state}
@@ -195,6 +197,7 @@ export default class modalKeyboard extends React.Component {
           }
           {this.props.modalVisible ?
             <TextInput
+              onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
               autoFocus={true}
               onChangeText={(text) => this.processText(text)}
               onSubmitEditing= {() => { this.submit() }}
@@ -204,7 +207,7 @@ export default class modalKeyboard extends React.Component {
               enablesReturnKeyAutomatically={true}
               multiline={true}
               onKeyPress={this.onKeyPress}
-              style={styles.input}/> : null}
+              style={[styles.input, this.props.input]}/> : null}
       </Modal>
     );
   }
@@ -217,6 +220,10 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: 'red',
   },
+  userFriendNameText: {
+    fontWeight: 'bold',
+    color: 'black'
+  },
   input: {
     position: 'absolute',
     bottom: 0,
@@ -224,7 +231,6 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 2,
-    backgroundColor: 'pink',
   },
   userFriendContainer: {
     paddingHorizontal: 10,
@@ -239,10 +245,8 @@ const styles = StyleSheet.create({
   },
   flat: {
     width: '100%',
-    backgroundColor: 'orange',
   },
   flatContainer: {
-    maxHeight : 200,
     width: '100%',
     borderRadius: 2,
   },
