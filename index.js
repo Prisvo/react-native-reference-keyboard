@@ -116,7 +116,7 @@ export default class modalKeyboard extends React.Component {
     <TouchableOpacity onPress={() => this.setFriend(item)}
                       style={[styles.userFriendContainer,
                               this.props.userFriendContainer,
-                              index == this.props.friends.length - 1 ? {backgroundColor: 'blue'} :  {backgroundColor: 'white'}]}>
+                              index == this.props.friends.length - 1 ? {backgroundColor: '#E0E0E0'} :  {backgroundColor: '#FFF'}]}>
       <Image source={{uri: item.avatar}}
              style={[styles.userFriendImage, this.props.userFriendImage]}/>
       <View style={[styles.userFriendName, this.props.userFriendName]}>
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    backgroundColor: 'red',
+    backgroundColor: '#fff',
   },
   userFriendNameText: {
     fontWeight: 'bold',
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     borderColor: 'gray',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderRadius: 2,
   },
