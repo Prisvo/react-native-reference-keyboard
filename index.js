@@ -47,12 +47,12 @@ export default class modalKeyboard extends React.Component {
   submit() {
     this.props.submit(this.state.text);
     this.setState({text: ''});
-    this.textInput.clear()
+    if(this.textInput){this.textInput.clear();}
   }
 
   _keyboardDidHide() {
     this.setState({text: ''});
-    this.textInput.clear()
+    if(this.textInput){this.textInput.clear();}
     this.props.closeModal();
   }
 
@@ -105,12 +105,6 @@ export default class modalKeyboard extends React.Component {
       friendsVisible: false,
     })
   }
-
-  onKeyPress = ({ nativeEvent }) => {
-    if (nativeEvent.key === 'Enter') {
-      this.submit();
-    }
-  };
 
   _renderItem = ({item, index}) => (
     <TouchableOpacity onPress={() => this.setFriend(item)}
@@ -200,13 +194,12 @@ export default class modalKeyboard extends React.Component {
               onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
               autoFocus={true}
               onChangeText={(text) => this.processText(text)}
-              onSubmitEditing= {() => { this.submit() }}
+              onSubmitEditing= {() => { this.submit(); }}
               value={this.state.text}
               blurOnSubmit={true}
               ref={input => { this.textInput = input }}
               enablesReturnKeyAutomatically={true}
               multiline={true}
-              onKeyPress={this.onKeyPress}
               style={[styles.input, this.props.input]}/> : null}
       </Modal>
     );
