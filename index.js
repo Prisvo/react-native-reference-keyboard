@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import Touchable from 'react-native-platform-touchable';
+
 export default class modalKeyboard extends React.Component {
 
   constructor(props) {
@@ -107,33 +109,62 @@ export default class modalKeyboard extends React.Component {
   }
 
   _renderItem = ({item, index}) => (
-    <TouchableOpacity onPress={() => this.setFriend(item)}
-                      style={[styles.userFriendContainer,
-                              this.props.userFriendContainer,
-                              index == this.props.friends.length - 1 ? {backgroundColor: '#E0E0E0'} :  {backgroundColor: '#FFF'}]}>
-      <Image source={{uri: item.avatar}}
-             style={[styles.userFriendImage, this.props.userFriendImage]}/>
-      <View style={[styles.userFriendName, this.props.userFriendName]}>
-        <Text style={[styles.userFriendNameText, this.props.userFriendNameText]}>{ item.name }</Text>
-        <Text style={[styles.userFriendNickname, this.props.userFriendNickname]}>{ item.nickname }</Text>
+    <Touchable onPress={() => this.setFriend(item)}>
+      <View style={[styles.userFriendContainer,
+                              index == 0 ? {backgroundColor: '#E0E0E0'} :  {backgroundColor: '#FFF'}]}>
+        <Image source={{uri: item.avatar}}
+               style={[styles.userFriendImage, this.props.userFriendImage]}/>
+        <View style={[styles.userFriendName, this.props.userFriendName]}>
+          <Text style={[styles.userFriendNameText, this.props.userFriendNameText]}>{ item.name }</Text>
+          <Text style={[styles.userFriendNickname, this.props.userFriendNickname]}>{ item.nickname }</Text>
+        </View>
       </View>
-    </TouchableOpacity>
+    </Touchable>
   );
 
   filterFriends(lastWord) {
-    var elements = [];
-    var friends = [];
+    var friends = [],
+        listIn = [],
+        listOut = [],
+        everyWord = [];
 
-    for(var i = 0 ; i < this.props.friends.length; i++) {
-      elements.push({'valor': this.levenshteinDistance(lastWord, '@' + this.props.friends[i].nickname) , 'friend': this.props.friends[i]});
+    for (var i = 0; i < this.props.friends.length ; i++) {
+      everyWord.push({key: this.props.friends[i].nickname, friend: this.props.friends[i]});
+      everyWord.push({key: this.props.friends[i].name, friend: this.props.friends[i]});
     }
 
-    elements.sort(function(a, b){
+    for (var i = 0; i < everyWord.length ; i++) {
+      if(everyWord[i].key.toLowerCase().startsWith(lastWord.slice(1))) {
+        listIn.push(everyWord[i]);
+      } else {
+        listOut.push(everyWord[i]);
+      }
+    }
+
+    listIn.sort(function(a, b){
+      return a.key > b.key;
+    })
+
+    for(var i = 0 ; i < listOut.length; i++) {
+      listOut[i].valor = this.levenshteinDistance(lastWord, '@' + listOut[i].key);
+    }
+
+    listOut.sort(function(a, b){
       return a.valor - b.valor;
     })
 
-    for(var i = 0 ; i < elements.length ; i++) {
-      friends.push(elements[i].friend);
+    var tempList = {};
+
+    for (var i = 0 ; i < listIn.length ; i++) {
+      tempList[listIn[i].friend.nickname] = listIn[i].friend;
+    }
+
+    for (var i = 0 ; i < listOut.length ; i++) {
+      tempList[listOut[i].friend.nickname] = listOut[i].friend;
+    }
+
+    for (var key in tempList) {
+      friends.push(tempList[key]);
     }
 
     return friends;
@@ -154,8 +185,6 @@ export default class modalKeyboard extends React.Component {
       this.setState({
         friends: friends,
         friendsVisible: true,
-      }, () => {
-        this.flatList.scrollToEnd();
       })
     } else {
       this.setState({
@@ -181,14 +210,13 @@ export default class modalKeyboard extends React.Component {
               <FlatList
                 style={[styles.flat, this.props.flat]}
                 ref={(ref) => { this.flatList = ref; }}
-                data={this.state.friends.reverse()}
+                data={this.state.friends}
                 extraData={this.state}
                 keyboardShouldPersistTaps={'always'}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={this._renderItem}/>
             </View>
-             : null
-          }
+             : null }
           {this.props.modalVisible ?
             <TextInput
               onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
@@ -215,7 +243,8 @@ const styles = StyleSheet.create({
   },
   userFriendNameText: {
     fontWeight: 'bold',
-    color: 'black'
+    color: 'black',
+    fontSize: 15,
   },
   input: {
     position: 'absolute',
@@ -243,14 +272,15 @@ const styles = StyleSheet.create({
   flatContainer: {
     width: '100%',
     borderRadius: 2,
+    marginTop: 5,
   },
   userFriendName: {
     justifyContent: 'center',
     height: 30,
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
   },
   userFriendNickname: {
-    fontSize: 11,
+    fontSize: 12,
     color: 'gray'
   },
 });
