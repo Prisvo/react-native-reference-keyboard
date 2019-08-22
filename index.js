@@ -47,7 +47,6 @@ export default class modalKeyboard extends React.Component {
   }
 
   _submit() {
-    console.log('oloco')
     this.props.submit(this.state.text);
     this.setState({text: ''});
     if(this.textInput){this.textInput.clear();}
@@ -60,20 +59,12 @@ export default class modalKeyboard extends React.Component {
   }
 
   _levenshteinDistance(a, b) {
-    // Create empty edit distance matrix for all possible modifications of
-    // substrings of a to substrings of b.
     const distanceMatrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
 
-    // Fill the first row of the matrix.
-    // If this is first row then we're transforming empty string to a.
-    // In this case the number of transformations equals to size of a substring.
     for (let i = 0; i <= a.length; i += 1) {
       distanceMatrix[0][i] = i;
     }
 
-    // Fill the first column of the matrix.
-    // If this is first column then we're transforming empty string to b.
-    // In this case the number of transformations equals to size of b substring.
     for (let j = 0; j <= b.length; j += 1) {
       distanceMatrix[j][0] = j;
     }
@@ -82,15 +73,15 @@ export default class modalKeyboard extends React.Component {
       for (let i = 1; i <= a.length; i += 1) {
         const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
         distanceMatrix[j][i] = Math.min(
-          distanceMatrix[j][i - 1] + 1, // deletion
-          distanceMatrix[j - 1][i] + 1, // insertion
-          distanceMatrix[j - 1][i - 1] + indicator, // substitution
+          distanceMatrix[j][i - 1] + 1,
+          distanceMatrix[j - 1][i] + 1,
+          distanceMatrix[j - 1][i - 1] + indicator,
         );
       }
     }
 
     return distanceMatrix[b.length][a.length];
-  } // code from https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance
+  }
 
   _setFriend(item) {
     let words = this.state.text.split(' ');
