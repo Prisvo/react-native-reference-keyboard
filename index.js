@@ -46,7 +46,8 @@ export default class modalKeyboard extends React.Component {
 
   }
 
-  submit() {
+  _submit() {
+    console.log('oloco')
     this.props.submit(this.state.text);
     this.setState({text: ''});
     if(this.textInput){this.textInput.clear();}
@@ -58,7 +59,7 @@ export default class modalKeyboard extends React.Component {
     this.props.closeModal();
   }
 
-  levenshteinDistance(a, b) {
+  _levenshteinDistance(a, b) {
     // Create empty edit distance matrix for all possible modifications of
     // substrings of a to substrings of b.
     const distanceMatrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
@@ -91,7 +92,7 @@ export default class modalKeyboard extends React.Component {
     return distanceMatrix[b.length][a.length];
   } // code from https://github.com/trekhleb/javascript-algorithms/tree/master/src/algorithms/string/levenshtein-distance
 
-  setFriend(item) {
+  _setFriend(item) {
     let words = this.state.text.split(' ');
     let lastWord = words[words.length -1];
     let body = '';
@@ -109,7 +110,7 @@ export default class modalKeyboard extends React.Component {
   }
 
   _renderItem = ({item, index}) => (
-    <Touchable onPress={() => this.setFriend(item)}>
+    <Touchable onPress={() => this._setFriend(item)}>
       <View style={[styles.userFriendContainer,
                               index == 0 ? {backgroundColor: '#E0E0E0'} :  {backgroundColor: '#FFF'}]}>
         <Image source={{uri: item.avatar}}
@@ -122,7 +123,7 @@ export default class modalKeyboard extends React.Component {
     </Touchable>
   );
 
-  filterFriends(lastWord) {
+  _filterFriends(lastWord) {
     var friends = [],
         listIn = [],
         listOut = [],
@@ -146,7 +147,7 @@ export default class modalKeyboard extends React.Component {
     })
 
     for(var i = 0 ; i < listOut.length; i++) {
-      listOut[i].valor = this.levenshteinDistance(lastWord, '@' + listOut[i].key);
+      listOut[i].valor = this._levenshteinDistance(lastWord, '@' + listOut[i].key);
     }
 
     listOut.sort(function(a, b){
@@ -170,7 +171,7 @@ export default class modalKeyboard extends React.Component {
     return friends;
   }
 
-  processText(text) {
+  _processText(text) {
     let words = text.split(' ');
     let lastWord = words[words.length -1];
     let pattern = /^@[A-Za-z0-9._]+$/;
@@ -179,7 +180,7 @@ export default class modalKeyboard extends React.Component {
 
     if(valid){
 
-      friends = this.filterFriends(lastWord);
+      friends = this._filterFriends(lastWord);
 
 
       this.setState({
@@ -217,18 +218,17 @@ export default class modalKeyboard extends React.Component {
                 renderItem={this._renderItem}/>
             </View>
              : null }
-          {this.props.modalVisible ?
-            <TextInput
-              onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
-              autoFocus={true}
-              onChangeText={(text) => this.processText(text)}
-              onSubmitEditing= {() => { this.submit(); }}
-              value={this.state.text}
-              blurOnSubmit={true}
-              ref={input => { this.textInput = input }}
-              enablesReturnKeyAutomatically={true}
-              multiline={true}
-              style={[styles.input, this.props.input]}/> : null}
+          <TextInput
+            onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
+            autoFocus={true}
+            onChangeText={(text) => this._processText(text)}
+            onSubmitEditing= {() => { this._submit(); }}
+            value={this.state.text}
+            blurOnSubmit={true}
+            ref={input => { this.textInput = input }}
+            enablesReturnKeyAutomatically={true}
+            multiline={true}
+            style={[styles.input, this.props.input]}/>
       </Modal>
     );
   }
