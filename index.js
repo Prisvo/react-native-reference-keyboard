@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import Touchable from 'react-native-platform-touchable';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class modalKeyboard extends React.Component {
 
@@ -209,17 +210,48 @@ export default class modalKeyboard extends React.Component {
                 renderItem={this._renderItem}/>
             </View>
              : null }
-          <TextInput
-            onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
-            autoFocus={true}
-            onChangeText={(text) => this._processText(text)}
-            onSubmitEditing= {() => { this._submit(); }}
-            value={this.state.text}
-            blurOnSubmit={true}
-            ref={input => { this.textInput = input }}
-            enablesReturnKeyAutomatically={true}
-            multiline={true}
-            style={[styles.input, this.props.input]}/>
+          { this.props.topicInput ?
+            <View style={styles.addPostContainer}>
+              <Icon onPress={() => this.props.openModalChooseImage()}
+                    name="picture-o"
+                    color={this.props.video || this.props.avatar ? '#199a05' : '#4d4d4d'}
+                    style={{ fontSize: 20,
+                             paddingHorizontal: 10,
+                             paddingTop: 10}}>
+              </Icon>
+              <TextInput
+               onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
+               autoFocus={true}
+               onChangeText={(text) => this._processText(text)}
+               onSubmitEditing= {() => { this._submit(); }}
+               style={[styles.addPostInput, {flex: 1, maxHeight: 80}]}
+               multiline={true}
+               placeholder='Join the discussion...'
+               value={this.state.text}
+               blurOnSubmit={true}
+               enablesReturnKeyAutomatically={true}
+               ref={input => { this.textInput = input }}/>
+              <Icon onPress={() => this._submit()}
+                    name="paper-plane"
+                    color={'#4d4d4d'}
+                    style={{fontSize: 16,
+                          paddingTop: 10,
+                          paddingHorizontal: 10}}>
+              </Icon>
+            </View>
+            :
+            <TextInput
+              onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
+              autoFocus={true}
+              onChangeText={(text) => this._processText(text)}
+              onSubmitEditing= {() => { this._submit(); }}
+              value={this.state.text}
+              blurOnSubmit={true}
+              ref={input => { this.textInput = input }}
+              enablesReturnKeyAutomatically={true}
+              multiline={true}
+              style={[styles.input, this.props.input]}/>
+          }
       </Modal>
     );
   }
@@ -245,6 +277,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1,
     borderRadius: 2,
+  },
+  addPostContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingBottom: 10,
+    alignItems: 'stretch',
+    borderTopWidth: 10,
+    borderColor: 'rgba(255, 255, 255, 0.4)'
+  },
+  addPostInput: {
+    backgroundColor: '#fafafa',
+    borderColor: '#f2f2f2',
+    borderWidth: 2,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    textAlignVertical: 'bottom',
   },
   userFriendContainer: {
     paddingHorizontal: 10,
