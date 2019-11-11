@@ -214,16 +214,17 @@ export default class modalKeyboard extends React.Component {
             <View style={styles.addPostContainer}>
               <Icon onPress={() => this.props.openModalChooseImage()}
                     name="picture-o"
-                    color={this.props.video || this.props.avatar ? '#199a05' : '#4d4d4d'}
+                    color={this.props.video || this.props.avatar ? '#199a05' : '#a8b1b8'}
                     style={{ fontSize: 20,
-                             paddingHorizontal: 10,
-                             paddingTop: 10}}>
+                             paddingTop: 10,
+                             paddingHorizontal: 10}}>
               </Icon>
               <TextInput
                onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; this.setState({textInput: height})}}
                autoFocus={true}
                onChangeText={(text) => this._processText(text)}
                onSubmitEditing= {() => { this._submit(); }}
+               placeholderTextColor='#c7d1d8'
                style={[styles.addPostInput, {flex: 1, maxHeight: 80}]}
                multiline={true}
                placeholder='Join the discussion...'
@@ -233,8 +234,8 @@ export default class modalKeyboard extends React.Component {
                ref={input => { this.textInput = input }}/>
               <Icon onPress={() => this._submit()}
                     name="paper-plane"
-                    color={'#4d4d4d'}
-                    style={{fontSize: 16,
+                    color={'#a8b1b8'}
+                    style={{fontSize: 20,
                           paddingTop: 10,
                           paddingHorizontal: 10}}>
               </Icon>
@@ -284,19 +285,19 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: 'white',
-    paddingBottom: 10,
+    backgroundColor: '#40444b',
+    paddingBottom: 20,
+    paddingTop: 10,
     alignItems: 'stretch',
-    borderTopWidth: 10,
-    borderColor: 'rgba(255, 255, 255, 0.4)'
   },
   addPostInput: {
-    backgroundColor: '#fafafa',
-    borderColor: '#f2f2f2',
-    borderWidth: 2,
-    borderRadius: 5,
+    backgroundColor: '#40444b',
     paddingHorizontal: 10,
+    paddingTop: 0,
+    paddingBottom: 0,
     textAlignVertical: 'bottom',
+    color: '#c7d1d8',
+    letterSpacing: 1,
   },
   userFriendContainer: {
     paddingHorizontal: 10,
